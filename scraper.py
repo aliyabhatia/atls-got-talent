@@ -167,6 +167,6 @@ def bridgespan_scraper():
 # key_words = ['Director','Chief','Senior','Vice President','Officer']
 
 # call individual scrapers
-bridgespan_scraper()
+# bridgespan_scraper()
 # workforgood_scraper(key_words)
 # boardwalk_scraper()
