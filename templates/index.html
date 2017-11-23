@@ -6,25 +6,21 @@
 
 {% block main %}
 
-<!-- Columns with job postings -->
+<!-- List of job postings -->
+<!-- Eventually use CSS to turn these into pseudo-columns -->
 
 <div class="container">
-  <div class="row">
-    <div class="col">
-      <p class="text-left"><b>Job Title</b></p>
-      <p class = "text-left">Organization Name</p>
-      <p class = "text-left">Location: Atlanta</p>
-      <p class = "text-left">Source: Bridgespan</p>
-      <p class="text-left">Date Posted: 11/20/2017</p>
-    </div>
-    <div class="col">
-      <p class="text-left"><b>Job Title</b></p>
-      <p class = "text-left">Organization Name</p>
-      <p class = "text-left">Location: Atlanta</p>
-      <p class = "text-left">Source: Bridgespan</p>
-      <p class="text-left">Date Posted: 11/20/2017</p>
-    </div>
-  </div>
- </div>
+  <ul>
+  {% for listing in listings %}
+    <li>
+      <p class="text-left"><a href="{{listing.job_link}}"><b>{{listing.job_title}}</b></a></p>
+      <p class = "text-left">{{listing.org_name}}</p>
+      <p class = "text-left">Source: {{listing.source}}</p>
+      <p class="text-left">Date Posted: {{listing.date_posted}}</p>
+    </li>
+  {% endfor %}
+  </ul>
+</div>
+
 
 {% endblock %}
