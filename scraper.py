@@ -74,8 +74,8 @@ def bridgespan_scraper():
 			
 			# pull the name of the role and the URL for the listing
 			job_title_container = container.findAll("div",{"class":"PositionTitleLink"})
-			job_title = role_name_container[0].text.strip()
-			job_link = role_name_container[0].a["href"]
+			job_title = job_title_container[0].text.strip()
+			job_link = job_title_container[0].a["href"]
 
 			# identify static information
 			source = "Bridgespan"
