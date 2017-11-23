@@ -83,7 +83,7 @@ def bridgespan_scraper():
 
 			# create new db model object and post to SQL database
 			new_listing = Listing(job_title, job_link, org_name, source, date_posted)
-			db.session.add(Listing)
+			db.session.add(new_listing)
 			db.session.commit()
 
 # # workforgood job scraper - searches pages 1-6 for roles containing one or more keywords
