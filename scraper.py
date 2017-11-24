@@ -84,42 +84,48 @@ def bridgespan_scraper():
 			db.session.add(new_listing)
 			db.session.commit()
 
-# # workforgood job scraper - searches pages 1-6 for roles containing one or more keywords
-# def workforgood_scraper(key_words):
-# 	# set url prefix for job descriptions
-# 	url_prefix = "https://www.workforgood.org"
+# workforgood job scraper - searches pages 1-6 for roles containing one or more keywords
+def workforgood_scraper(key_words):
+	# set url prefix for job descriptions
+	url_prefix = "https://www.workforgood.org"
 	
-# 	# loop through pages 1 through 6 of workforgood site
-# 	counter = 1
-# 	while counter <= 6:
-# 		if counter == 1:
-# 			my_url = 'https://www.workforgood.org/landingpage/87/georgia-nonprofit-jobs/'
-# 		else:
-# 			my_url = 'https://www.workforgood.org/landingpage/87/georgia-nonprofit-jobs/' + str(counter) + '/'
+	# loop through pages 1 through 6 of workforgood Georgia site
+	counter = 1
+	while counter <= 6:
+		if counter == 1:
+			my_url = 'https://www.workforgood.org/landingpage/87/georgia-nonprofit-jobs/'
+		else:
+			my_url = 'https://www.workforgood.org/landingpage/87/georgia-nonprofit-jobs/' + str(counter) + '/'
 		
-# 		page_soup = make_page_soup(my_url)
+		page_soup = make_page_soup(my_url)
 
-# 		# grabs each listing
-# 		containers = page_soup.findAll("div",{"class":"lister__details cf js-clickable"})
+		# grabs each listing
+		containers = page_soup.findAll("div",{"class":"lister__details cf js-clickable"})
 
-# 		for container in containers:
+		for container in containers:
 			
-# 			# grab the name of the role
-# 			role_name_container = container.findAll("h3",{"class":"lister__header"})
-# 			role_name = role_name_container[0].text
+			# grab the name of the role
+			job_title_container = container.findAll("h3",{"class":"lister__header"})
+			job_title = job_title_container[0].text
 			
-# 			# filter for roles with keywords
-# 			if any(x in role_name for x in key_words):
+			# filter for roles with keywords
+			if any(x in job_title for x in key_words):
 				
-# 				# pull url and organization name
-# 				role_url = role_name_container[0].a["href"]
-# 				org_name_container = container.findAll("li",{"itemprop":"hiringOrganization"})
-# 				org_name = org_name_container[0].text
+				# pull url and organization name
+				job_link = url_prefix + job_title_container[0].a["href"]
+				org_name_container = container.findAll("li",{"itemprop":"hiringOrganization"})
+				org_name = org_name_container[0].text
 
-# 				# append job postings to csv
-# 				add_to_csv(org_name,role_name,url_prefix,role_url)
+				# identify static information
+				source = "Work For Good"
+				date_posted = "2017-11-23"
 
-# 		counter += 1
+				# create new db model object and post to SQL database
+				new_listing = Listing(job_title, job_link, org_name, source, date_posted)
+				db.session.add(new_listing)
+				db.session.commit()
+		
+		counter += 1
 
 # def boardwalk_scraper():
 # 	# set url prefix for job descriptions
@@ -163,9 +169,9 @@ def bridgespan_scraper():
 ##### MAIN CODE STARTS HERE #####
 
 # master list of key words for more varied job searches
-# key_words = ['Director','Chief','Senior','Vice President','Officer']
+key_words = ['Director','Chief','Senior','Vice President','Officer']
 
 # call individual scrapers
 bridgespan_scraper()
-# workforgood_scraper(key_words)
+workforgood_scraper(key_words)
 # boardwalk_scraper()
