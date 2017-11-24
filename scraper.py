@@ -1,25 +1,34 @@
-# import relevant libraries 
+##### IMPORT RELEVANT LIBRARIES AND CLASSES #####
+
+# os helps detect environment variables, in this case the DB URL
 import os
+
+# urllib and beautiful soup facilitate scraping
 import urllib
+from bs4 import BeautifulSoup as soup
+
+# flask and sqlalchemy facilitate web app
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
-from bs4 import BeautifulSoup as soup
 
 # import Listing db class object
 from listing import Listing
 
-# configure flask app and SQLAlchemy
+
+##### CONFIGURE FLASK APP AND SQLALCHEMY #####
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 db = SQLAlchemy(app)
 
+
 ##### HELPER FUNCTIONS THAT ARE USED THROUGHOUT #####
 
 # Grab Beautiful Soup from each website
 def make_page_soup(my_url):
-	# opening up the conection and grabbing the page - eventually should make this its own function
+	# opening up the conection and grabbing HTML from the page
 	req = urllib.request.Request(my_url, headers = {'User-Agent':"Magic Browser"})
 	con = urllib.request.urlopen(req)
 	page_html = con.read()
@@ -28,6 +37,7 @@ def make_page_soup(my_url):
 	# html parsing
 	page_soup = soup(page_html, "html.parser")
 	return page_soup
+
 
 ##### FUNCTIONS TO SCRAPE SPECIFIC SITES #####
 
@@ -148,6 +158,7 @@ def bridgespan_scraper():
 
 # 					# append job postings to csv
 # 					add_to_csv(org_name,role_name,url_prefix,role_url)
+
 
 ##### MAIN CODE STARTS HERE #####
 
