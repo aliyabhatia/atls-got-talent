@@ -127,46 +127,55 @@ def workforgood_scraper(key_words):
 		
 		counter += 1
 
-# def boardwalk_scraper():
-# 	# set url prefix for job descriptions
-# 	url_prefix = "http://www.boardwalkconsulting.com/"
+def boardwalk_scraper():
+	# set url prefix for job descriptions
+	url_prefix = "http://www.boardwalkconsulting.com/"
 
-# 	# set my_url to a specific page
-# 	my_url = "http://www.boardwalkconsulting.com/our-clients.aspx"
+	# set my_url to a specific page
+	my_url = "http://www.boardwalkconsulting.com/our-clients.aspx"
 
-# 	page_soup = make_page_soup(my_url)
+	page_soup = make_page_soup(my_url)
 
-# 	# grabs subset of HTML with job listings
-# 	boardwalk_clients = page_soup.findAll("div",{"id":"clientsColumn2"})
+	# grabs subset of HTML with job listings
+	boardwalk_clients = page_soup.findAll("div",{"id":"clientsColumn2"})
 
-# 	# grabs each job listing
-# 	containers = boardwalk_clients[0].findAll("div")
+	# grabs each job listing
+	containers = boardwalk_clients[0].findAll("div")
 
-# 	# grabs key information from each listing
-# 	for container in containers:
-# 		possible_roles = container.findAll("p")
+	# grabs key information from each listing
+	for container in containers:
+		possible_roles = container.findAll("p")
 		
-# 		for possible_role in possible_roles:
+		for possible_role in possible_roles:
 
-# 			# screen for "Active Assignment"
-# 			if "Active Assignment" in possible_role.text:
-# 				# screen for Atlanta
-# 				if "Atlanta" in container.h1.text:
+			# screen for "Active Assignment"
+			if "Active Assignment" in possible_role.text:
+				# screen for Atlanta
+				if "Atlanta" in container.h1.text:
 					
-# 					# pull the name of the role
-# 					role_name = possible_role.text.replace('Active Assignment: ','').replace('View Leadership Profile','')
+					# pull the name of the role
+					job_title = possible_role.text.replace('Active Assignment: ','').replace('View Leadership Profile','')
 					
-# 					# pull the Organizationnization's name
-# 					org_name = container.h1.text.replace(', Atlanta, GA','')
+					# pull the Organizationnization's name
+					org_name = container.h1.text.replace(', Atlanta, GA','')
 					
-# 					# pull the URL for the listing
-# 					role_url = possible_role.a["href"]
+					# pull the URL for the listing
+					job_link = url_prefix + possible_role.a["href"]
 
-# 					# append job postings to csv
-# 					add_to_csv(org_name,role_name,url_prefix,role_url)
+					# identify static information
+					source = "Boardwalk"
+					date_posted = "2017-11-23"					
+
+					# create new db model object and post to SQL database
+					new_listing = Listing(job_title, job_link, org_name, source, date_posted)
+					db.session.add(new_listing)
+					db.session.commit()
 
 
 ##### MAIN CODE STARTS HERE #####
+
+# clear out data from database
+db.session.query(Listing).delete()
 
 # master list of key words for more varied job searches
 key_words = ['Director','Chief','Senior','Vice President','Officer']
@@ -174,4 +183,4 @@ key_words = ['Director','Chief','Senior','Vice President','Officer']
 # call individual scrapers
 bridgespan_scraper()
 workforgood_scraper(key_words)
-# boardwalk_scraper()
+boardwalk_scraper()
