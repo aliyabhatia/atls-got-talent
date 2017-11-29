@@ -27,5 +27,5 @@ db = SQLAlchemy(app)
 @app.route("/")
 def index():
     # establish listings as set of objects from server
-    listings = Listing.query.order_by(Listing.id).all()
+    listings = Listing.query.order_by(Listing.date_posted.desc()).all()
     return render_template("index.html", listings=listings)

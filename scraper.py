@@ -7,6 +7,9 @@ import os
 import urllib
 from bs4 import BeautifulSoup as soup
 
+# datetime to support parsing posting dates
+from datetime import datetime
+
 # flask and sqlalchemy facilitate web app
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
@@ -75,9 +78,12 @@ def bridgespan_scraper():
 			job_title = job_title_container[0].text.strip()
 			job_link = url_prefix + job_title_container[0].a["href"]
 
-			# identify static information
+			# get the posting date and convert into datetime object
+			date_posted_raw = container.findAll("div",{"class":"LighterJobListing"})[2].text.strip().replace('Date Posted:', '').strip()
+			date_posted = datetime.strptime(date_posted_raw, '%m/%d/%Y')
+
+			# identify source
 			source = "Bridgespan"
-			date_posted = "2017-11-23"
 
 			# create new db model object and post to SQL database
 			new_listing = Listing(job_title, job_link, org_name, source, date_posted)
@@ -116,9 +122,22 @@ def workforgood_scraper(key_words):
 				org_name_container = container.findAll("li",{"itemprop":"hiringOrganization"})
 				org_name = org_name_container[0].text
 
+				# identify date posted
+				# have to go into the link for the job posting
+				date_posted_soup = make_page_soup(job_link)
+
+				# find all relevant classes where date posted could be
+				role_items = date_posted_soup.findAll("div",{"class":"cf margin-bottom-5"})
+
+				# search through different attributes until date posted is found
+				for role_item in role_items:
+					if "Posted" in role_item.text:
+						date_posted_raw = role_item.text.strip().replace('Posted','').strip()
+						date_posted = datetime.strptime(date_posted_raw, '%b %d, %Y')
+						break
+
 				# identify static information
 				source = "Work For Good"
-				date_posted = "2017-11-23"
 
 				# create new db model object and post to SQL database
 				new_listing = Listing(job_title, job_link, org_name, source, date_posted)
@@ -142,6 +161,9 @@ def boardwalk_scraper():
 	# grabs each job listing
 	containers = boardwalk_clients[0].findAll("div")
 
+	# get today's date
+	now = datetime.now()
+
 	# grabs key information from each listing
 	for container in containers:
 		possible_roles = container.findAll("p")
@@ -164,7 +186,7 @@ def boardwalk_scraper():
 
 					# identify static information
 					source = "Boardwalk"
-					date_posted = "2017-11-23"					
+					date_posted = now					
 
 					# create new db model object and post to SQL database
 					new_listing = Listing(job_title, job_link, org_name, source, date_posted)
