@@ -22,7 +22,7 @@
                      <a href="{{listing.job_link}}" target="_blank" class="job-title">{{listing.job_title}}</a>
                      <h6 class="heading">{{listing.org_name}}</h6>
                      <h6 class="heading-2">Source: {{listing.source}}</h6>
-                     <h6 class="heading-2">Date Posted: {{listing.date_posted}}</h6>
+                     <h6 class="heading-2">Date Posted: {{listing.date_posted.strftime('%B %-d, %Y')}}</h6>
                   </div>
                   {% endfor %}
                </div>
