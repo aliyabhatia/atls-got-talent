@@ -50,12 +50,19 @@ def make_page_soup(my_url):
 # random date generator
 # generates a random date in last 30 days to give useful date to un-dated listings
 def rand_date():
+	
+	# get number of seconds in a 30 day range - 30 times hours/day times mins/hour times seconds/minute
 	int_delta = (30 * 24 * 60 * 60)
+
+	# generate a random second in that 30-day range (and therefore a random day as well)
 	random_second = randrange(int_delta)
+
+	# return today minus the random moment between 0 and 30 days to get a time in the last 30 days
 	return datetime.now() + timedelta(seconds=(-1 * random_second))
 
 # bridgespan non-profit job scraper
 def bridgespan_scraper():
+	
 	# set url prefix for job descriptions
 	url_prefix = "https://www.bridgespan.org/jobs/nonprofit-jobs/"
 
@@ -102,6 +109,7 @@ def bridgespan_scraper():
 
 # workforgood job scraper - searches pages 1-6 for roles containing one or more keywords
 def workforgood_scraper(key_words):
+	
 	# set url prefix for job descriptions
 	url_prefix = "https://www.workforgood.org"
 	
@@ -157,6 +165,7 @@ def workforgood_scraper(key_words):
 		counter += 1
 
 def boardwalk_scraper():
+	
 	# set url prefix for job descriptions
 	url_prefix = "http://www.boardwalkconsulting.com/"
 
@@ -194,9 +203,12 @@ def boardwalk_scraper():
 					# pull the URL for the listing
 					job_link = url_prefix + possible_role.a["href"]
 
+					# Boardwalk doesn't seem to share date posted, so need to create "pseudodate"
+					# call rand_date() function to find a random date in last 30 days
+					date_posted = rand_date()					
+
 					# identify static information
 					source = "Boardwalk"
-					date_posted = rand_date()					
 
 					# create new db model object and post to SQL database
 					new_listing = Listing(job_title, job_link, org_name, source, date_posted)

@@ -7,14 +7,17 @@
 {% block main %}
 
 <!-- List of job postings -->
-<!-- Eventually use CSS to turn these into pseudo-columns -->
 
 <div class="section">
          <div class="w-container">
+            
+            <!-- short section to describe purpose of the page --> 
             <div class="section-title-group">
                <h2 class="section-heading centered">Senior-Level Atlanta Non-Profit Jobs</h2>
                <h5 class="section-heading centered">Jobs pulled daily from Work For Good, Bridgespan, and Boardwalk, generally ordered by most-recent to least-recent</h5>
             </div>
+
+            <!-- pull in data from flask/python connection --> 
             <div class="w-dyn-list">
                <div class="w-dyn-items w-row">
                   {% for listing in listings %}
@@ -27,6 +30,7 @@
                   {% endfor %}
                </div>
             </div>
+
          </div>
       </div>
 
