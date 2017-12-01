@@ -8,7 +8,10 @@ import urllib
 from bs4 import BeautifulSoup as soup
 
 # datetime to support parsing posting dates
-from datetime import datetime
+from datetime import datetime, timedelta
+
+# import random range generator to help make random dates for Boardwalk listings
+from random import randrange
 
 # flask and sqlalchemy facilitate web app
 from flask import Flask, request
@@ -43,6 +46,13 @@ def make_page_soup(my_url):
 
 
 ##### FUNCTIONS TO SCRAPE SPECIFIC SITES #####
+
+# random date generator
+# generates a random date in last 30 days to give useful date to un-dated listings
+def rand_date():
+	int_delta = (30 * 24 * 60 * 60)
+	random_second = randrange(int_delta)
+	return datetime.now() + timedelta(seconds=(-1 * random_second))
 
 # bridgespan non-profit job scraper
 def bridgespan_scraper():
@@ -186,7 +196,7 @@ def boardwalk_scraper():
 
 					# identify static information
 					source = "Boardwalk"
-					date_posted = now					
+					date_posted = rand_date()					
 
 					# create new db model object and post to SQL database
 					new_listing = Listing(job_title, job_link, org_name, source, date_posted)
