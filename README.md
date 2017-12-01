@@ -1,6 +1,9 @@
 # atls-got-talent
 
-This is a web app that shows recent postings for senior level non-profit jobs in Atlanta. It includes:
-* a Python scraper in scraper.py that saves data to a Heroku Postgres database 
-* a Heroku-hosted Flask front-end web-app in application.py that serves up the data using HTML/Jinja 
-* a Python object specification in listing.py to keep server object standard across multiple Python files
+**Talented Atlantans** supports metro Atlanta's talent retention aspirations by creating transparency around senior level non-profit roles in the area. Very simply, it is a website that gathers senior level non-profit jobs from various job listing sites and posts them, roughly in order of the date they were posted.
+
+The **Talented Atlantans site** itself is at https://atls-got-talent.herokuapp.com/ 
+
+Clicking any particular job posting opens the posting in a new window for the a job-seeker to explore further. 
+
+The **Talented Atlantans scraper** (aka the scraper.py file) and its corresponding Postgres database can also be used independently. Heroku runs the scraper once per day through the Heroku scheduler. However, a user can force the scraper to update the database by running the scraper.py file.
