@@ -15,6 +15,8 @@
 * Some sites (Bridgespan, Boardwalk) only include senior level roles, in which case all Atlanta-area roles are scraped - other sites (Work For Good) have a range of roles, so a set of key words are used to narrow down which Atlanta-area roles are scraped
 * Some sites (Bridgespan, Work For Good) include the date posted which the Scraper will pull - other sites (Boardwalk) do not, and are assigned a random date in the last 30 days using the `rand_date()` function to help vary where the user sees these posts in the list
 
+## Application.py
+
 ## Other helper documents
 
 * **The Procfile** helps Heroku determine what type of project this is - in this case, a web app
