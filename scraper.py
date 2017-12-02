@@ -40,25 +40,31 @@ def make_page_soup(my_url):
 	page_html = con.read()
 	con.close()
 
-	# html parsing
+	# initiate html parsing
 	page_soup = soup(page_html, "html.parser")
 	return page_soup
-
-
-##### FUNCTIONS TO SCRAPE SPECIFIC SITES #####
 
 # random date generator
 # generates a random date in last 30 days to give useful date to un-dated listings
 def rand_date():
 	
-	# get number of seconds in a 30 day range - 30 times hours/day times mins/hour times seconds/minute
-	int_delta = (30 * 24 * 60 * 60)
+	# get number of days in a 30 day range
+	int_delta = 30
 
-	# generate a random second in that 30-day range (and therefore a random day as well)
-	random_second = randrange(int_delta)
+	# generate a random day in that 30-day range
+	random_day = randrange(int_delta)
 
 	# return today minus the random moment between 0 and 30 days to get a time in the last 30 days
-	return datetime.now() + timedelta(seconds=(-1 * random_second))
+	return datetime.now() - timedelta(days=random_day)
+
+# write new listing to database
+def write_listing(job_title, job_link, org_name, source, date_posted):
+	new_listing = Listing(job_title, job_link, org_name, source, date_posted)
+	db.session.add(new_listing)
+	db.session.commit()
+
+
+##### FUNCTIONS TO SCRAPE SPECIFIC SITES #####
 
 # bridgespan non-profit job scraper
 def bridgespan_scraper():
@@ -102,10 +108,8 @@ def bridgespan_scraper():
 			# identify source
 			source = "Bridgespan"
 
-			# create new db model object and post to SQL database
-			new_listing = Listing(job_title, job_link, org_name, source, date_posted)
-			db.session.add(new_listing)
-			db.session.commit()
+			# create new db model object and post to SQL database using write_listing() helper function
+			write_listing(job_title, job_link, org_name, source, date_posted)
 
 # workforgood job scraper - searches pages 1-6 for roles containing one or more keywords
 def workforgood_scraper(key_words):
@@ -158,9 +162,7 @@ def workforgood_scraper(key_words):
 				source = "Work For Good"
 
 				# create new db model object and post to SQL database
-				new_listing = Listing(job_title, job_link, org_name, source, date_posted)
-				db.session.add(new_listing)
-				db.session.commit()
+				write_listing(job_title, job_link, org_name, source, date_posted)
 		
 		counter += 1
 
@@ -211,10 +213,7 @@ def boardwalk_scraper():
 					source = "Boardwalk"
 
 					# create new db model object and post to SQL database
-					new_listing = Listing(job_title, job_link, org_name, source, date_posted)
-					db.session.add(new_listing)
-					db.session.commit()
-
+					write_listing(job_title, job_link, org_name, source, date_posted)
 
 ##### MAIN CODE STARTS HERE #####
 
