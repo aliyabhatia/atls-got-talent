@@ -34,15 +34,19 @@ db = SQLAlchemy(app)
 
 # Grab Beautiful Soup from each website
 def make_page_soup(my_url):
-	# opening up the conection and grabbing HTML from the page
-	req = urllib.request.Request(my_url, headers = {'User-Agent':"Magic Browser"})
-	con = urllib.request.urlopen(req)
-	page_html = con.read()
-	con.close()
+	try:
+		# opening up the conection and grabbing HTML from the page
+		req = urllib.request.Request(my_url, headers = {'User-Agent':"Magic Browser"})
+		con = urllib.request.urlopen(req, timeout=60)
+		page_html = con.read()
+		con.close()
 
-	# initiate html parsing
-	page_soup = soup(page_html, "html.parser")
-	return page_soup
+		# initiate html parsing
+		page_soup = soup(page_html, "html.parser")
+		return page_soup
+	
+	except:
+		return None
 
 # random date generator
 # generates a random date in last 30 days to give useful date to un-dated listings
@@ -76,6 +80,13 @@ def bridgespan_scraper():
 	my_url = 'https://www.bridgespan.org/jobs/nonprofit-jobs/nonprofit-job-board'
 
 	page_soup = make_page_soup(my_url)
+
+	# check for an error, e.g. timeout or other reason why no page soup returned
+	if not page_soup:
+		return
+
+	# delete existing Bridgespan listings
+	db.session.query(Listing).filter_by(source="Bridgespan").delete()
 
 	# grabs each job listing
 	containers = page_soup.findAll("div",{"class":"dxdvFlowItem_Moderno dxdvItem_Moderno JobsDataViewItem dx-wrap"})
@@ -117,6 +128,15 @@ def workforgood_scraper(key_words):
 	# set url prefix for job descriptions
 	url_prefix = "https://www.workforgood.org"
 	
+	# check for an error, e.g. timeout or other reason why no page soup returned
+	my_url = 'https://www.workforgood.org/landingpage/87/georgia-nonprofit-jobs/'
+	page_soup = make_page_soup(my_url)
+	if not page_soup:
+		return
+
+	# delete existing Work For Good listings
+	db.session.query(Listing).filter_by(source="Work For Good").delete()
+
 	# loop through pages 1 through 6 of workforgood Georgia site
 	counter = 1
 	while counter <= 6:
@@ -176,6 +196,13 @@ def boardwalk_scraper():
 
 	page_soup = make_page_soup(my_url)
 
+	# check for an error, e.g. timeout or other reason why no page soup returned
+	if not page_soup:
+		return
+
+	# delete existing Boardwalk listings
+	db.session.query(Listing).filter_by(source="Boardwalk").delete()
+
 	# grabs subset of HTML with job listings
 	boardwalk_clients = page_soup.findAll("div",{"id":"clientsColumn2"})
 
@@ -216,9 +243,6 @@ def boardwalk_scraper():
 					write_listing(job_title, job_link, org_name, source, date_posted)
 
 ##### MAIN CODE STARTS HERE #####
-
-# clear out data from database
-db.session.query(Listing).delete()
 
 # master list of key words for more varied job searches
 key_words = ['Director','Chief','Senior','Vice President','Officer']
