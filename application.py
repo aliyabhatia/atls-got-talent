@@ -28,4 +28,11 @@ db = SQLAlchemy(app)
 def index():
     # establish listings as set of objects from server
     listings = Listing.query.order_by(Listing.date_posted.desc()).all()
+
+    # check if listings pull was successful
+    # if it failed, redirect to an error message
+    if len(listings) == 0:
+    	return render_template("error.html")
+
+    # if listings pull succeeded, serve up listings to index.html
     return render_template("index.html", listings=listings)

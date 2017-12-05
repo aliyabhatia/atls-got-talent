@@ -36,6 +36,7 @@ db = SQLAlchemy(app)
 def make_page_soup(my_url):
 	try:
 		# opening up the conection and grabbing HTML from the page
+		# set timeout limit to 60 seconds
 		req = urllib.request.Request(my_url, headers = {'User-Agent':"Magic Browser"})
 		con = urllib.request.urlopen(req, timeout=60)
 		page_html = con.read()
@@ -45,6 +46,8 @@ def make_page_soup(my_url):
 		page_soup = soup(page_html, "html.parser")
 		return page_soup
 	
+	# if the website does not respond or there is another failure to grab the HTML, return none 
+	# which will then prompt that scraper to exit without deleting current entries
 	except:
 		return None
 
@@ -138,14 +141,12 @@ def workforgood_scraper(key_words):
 	db.session.query(Listing).filter_by(source="Work For Good").delete()
 
 	# loop through pages 1 through 6 of workforgood Georgia site
-	counter = 1
+	counter = 2
 	while counter <= 6:
-		if counter == 1:
-			my_url = 'https://www.workforgood.org/landingpage/87/georgia-nonprofit-jobs/'
-		else:
-			my_url = 'https://www.workforgood.org/landingpage/87/georgia-nonprofit-jobs/' + str(counter) + '/'
-		
-		page_soup = make_page_soup(my_url)
+
+		# first round through while loop uses page_soup from first Work for Good page
+		# which was already collected in error checking above
+		# this avoids additional unecessary calculations since this page has already been "scraped"
 
 		# grabs each listing
 		containers = page_soup.findAll("div",{"class":"lister__details cf js-clickable"})
@@ -184,6 +185,11 @@ def workforgood_scraper(key_words):
 				# create new db model object and post to SQL database
 				write_listing(job_title, job_link, org_name, source, date_posted)
 		
+		# get page soup for current counter - starts at 2 and increments until 6 per the while loop
+		my_url = 'https://www.workforgood.org/landingpage/87/georgia-nonprofit-jobs/' + str(counter) + '/'
+		page_soup = make_page_soup(my_url)
+
+		# increment counter for next loop
 		counter += 1
 
 def boardwalk_scraper():
