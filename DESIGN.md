@@ -21,10 +21,11 @@
 
 **Application.py pulls in everything stored in the Postgres SQL database, sorts by date, and then serves that up to the front-end website. Technical details:**
 * Like `scraper.py`, `application.py` also pulls from `listing.py` as its model for the Postgres SQL database listings 
+* The homepage function `index()` first checks if there are any listings to pull - if not, then it serves up an error message
 
 ## static/styles.css
 
-**CSS for the site was developed by using Webflow to craft the styles and colors, and then saving the CSS from that Webflow site to the static/styles.css file.**
+**CSS for the site was developed by using Webflow to craft the styles, colors, and mobile-responsiveness, and then saving the CSS from that Webflow site to the static/styles.css file.**
 
 ## other helper documents
 
