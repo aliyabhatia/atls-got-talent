@@ -251,7 +251,7 @@ def boardwalk_scraper():
 ##### MAIN CODE STARTS HERE #####
 
 # master list of key words for more varied job searches
-key_words = ['Director','Chief','Senior','Vice President','Officer']
+key_words = ['Director','Chief','Senior','Vice President','Officer','Executive','VP','President']
 
 # call individual scrapers
 bridgespan_scraper()

@@ -15,7 +15,7 @@
 * Uses `Beautiful Soup` plug-in to support web scraping using HTML tags (e.g. "class," "div," and "li" tags) to identify valuable information
 * For each site, the scraper first checks that it can open the page using a `try except` sequence in the `make_page_soup()` function, then deletes database entries related to that page so that it can load in revised set of entries
 * Some sites (Bridgespan, Boardwalk) only include senior level roles, in which case all Atlanta-area roles are scraped - other sites (Work For Good) have a range of roles, so a set of key words are used to narrow down which Atlanta-area roles are scraped
-* Some sites (Bridgespan, Work For Good) include the date posted which the Scraper will pull - other sites (Boardwalk) do not, and are assigned a random date in the last 30 days using the `rand_date()` function to help vary where the user sees these posts in the list
+* Some sites (Bridgespan, Work For Good) include the date posted which the Scraper will pull - other sites (Boardwalk) do not, and are assigned a random date in the last 30 days using the `rand_date()` function to help vary where the user sees these posts in the list (rather than putting them all in any one part of the list)
 
 ## application.py
 
@@ -31,3 +31,4 @@
 
 * **The Procfile** helps Heroku determine what type of project this is - in this case, a web app
 * **requirements.txt** helps Heroku install the right plug-ins and add-ons to support the application
+* **runtime.txt** specifies which version of Python to use to run the python files
