@@ -8,11 +8,15 @@ Clicking any particular job posting opens the posting in a new window for the a 
 
 The locally-hosted Flask version of this app can be manually called through the following sequence of commands:
 
-`source .env`<br>
-`export FLASK_APP=application.py`<br>
-`flask run`
+````
+source .env
+export FLASK_APP=application.py
+flask run
+````
 
 The **Talented Atlantans scraper** (aka the `scraper.py` file) and its corresponding Postgres database can also be used independently. Heroku runs the scraper once per day through the Heroku scheduler. However, a user can force the scraper to update the database through the following sequence of commands:
 
-`source .env`<br>
-`python scraper.py`
+````
+source .env
+python scraper.py
+````
