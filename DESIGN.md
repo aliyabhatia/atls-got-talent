@@ -17,11 +17,13 @@
 * Some sites (Bridgespan, Boardwalk) only include senior level roles, in which case all Atlanta-area roles are scraped - other sites (Work For Good) have a range of roles, so a set of key words are used to narrow down which Atlanta-area roles are scraped
 * Some sites (Bridgespan, Work For Good) include the date posted which the Scraper will pull - other sites (Boardwalk) do not, and are assigned a random date in the last 30 days using the `rand_date()` function to help vary where the user sees these posts in the list (rather than putting them all in any one part of the list)
 
-## application.py
+## application.py and HTML templates
 
-**Application.py pulls in everything stored in the Postgres SQL database, sorts by date, and then serves that up to the front-end website. Technical details:**
+**Application.py pulls in everything stored in the Postgres SQL database, sorts by date, and then serves that up to the front-end HTML templates. Technical details:**
 * Like `scraper.py`, `application.py` also pulls from `listing.py` as its model for the Postgres SQL database listings 
-* The homepage function `index()` first checks if there are any listings to pull - if not, then it serves up an error message
+* The homepage function `index()` first checks if there are any listings to pull - if not, then it serves up an error message through `error.html`
+* If there are listings to display, then `index()` sends those to the `index.html` page which then parses the listings through Jinja into a list of job postings and links for the user to interact with
+* Both `error.html` and `index.html` are supported by `layout.html`
 
 ## static/styles.css
 
