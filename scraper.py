@@ -162,7 +162,7 @@ def workforgood_scraper(key_words):
 				
 				# pull url and organization name
 				job_link = url_prefix + job_title_container[0].a["href"]
-				org_name_container = container.findAll("li",{"itemprop":"hiringOrganization"})
+				org_name_container = container.findAll("li",{"class":"lister__meta-item lister__meta-item--recruiter"})
 				org_name = org_name_container[0].text
 
 				# identify date posted
